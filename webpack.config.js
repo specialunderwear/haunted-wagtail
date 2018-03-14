@@ -7,6 +7,7 @@
 // 7. npm start
 // 8. Browse to http://localhost:8080/dist/
 
+const path = require('path')
 const webpack = require('webpack')
 
 console.log(__dirname + "haunted/static")
@@ -34,6 +35,13 @@ module.exports = {
         },
       }],
     }]
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', '.scss'],
+    modules: [
+      path.resolve('src'),
+      path.resolve('./node_modules'),
+    ],
   },
   plugins: [
     new webpack.DefinePlugin({
