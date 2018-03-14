@@ -1,18 +1,16 @@
-import screenshot from 'screenshot'
-
-console.log(screenshot)
-screenshot().then(img => console.log("OOOO Ah screenshot", img))
-
-var THREE = require('three');
+import { getScreenshot } from 'screenshot'
+import * as THREE from 'three'
 import OBJLoader from 'three-obj-loader'
 OBJLoader(THREE)
 
-document.addEventListener('DOMContentLoaded', main);
 
-function main() {
-    init();
-    animate();
-}
+document.addEventListener('DOMContentLoaded', evt => {
+  getScreenshot(document.body).then(img => {
+    init(img)
+    animate()
+  })
+})
+
 var container;
 
 var camera, scene, renderer, bgTexture, bgWidth, bgHeight;
@@ -23,7 +21,7 @@ var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 
 
-function init() {
+function init(base64Image) {
 
     container = document.createElement( 'div' );
     document.body.appendChild( container );
@@ -35,16 +33,7 @@ function init() {
 
     scene = new THREE.Scene();
 
-    var loader = new THREE.TextureLoader();
-    loader.setCrossOrigin("");
-
-    bgTexture = loader.load("https://raw.githubusercontent.com/Rabbid76/graphics-snippets/master/resource/texture/background.jpg",
-        function ( texture ) {
-            var img = texture.image;
-            bgWidth= img.width;
-            bgHeight = img.height;
-        }
-    );
+    bgTexture = THREE.ImageUtils.loadTexture(base64Image);
     scene.background = bgTexture;
     bgTexture.wrapS = THREE.MirroredRepeatWrapping;
     bgTexture.wrapT = THREE.MirroredRepeatWrapping;
