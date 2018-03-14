@@ -1,0 +1,28 @@
+{
+  "name": "haunted-wagtail",
+  "version": "1.0.0",
+  "description": "A spooky easteregg for wagtail",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --bail",
+    "watch": "webpack --watch --progress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/specialunderwear/haunted-wagtail.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/specialunderwear/haunted-wagtail/issues"
+  },
+  "homepage": "https://github.com/specialunderwear/haunted-wagtail#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12"
+  }
+}
