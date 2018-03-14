@@ -15,7 +15,7 @@ module.exports = {
   context: __dirname,
   entry: "./src/index",
   output: {
-    path: __dirname + "/haunted/static",
+    path: __dirname + "/haunted/static/haunted/",
     filename: "[name].js"
   },
   module: {
