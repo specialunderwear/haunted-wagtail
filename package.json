@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --bail"
+    "build": "webpack --bail",
+    "watch": "webpack --watch --progress"
   },
   "repository": {
     "type": "git",
