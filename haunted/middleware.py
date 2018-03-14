@@ -7,8 +7,8 @@ logger = logging.getLogger('haunted.ghosts')
 
 
 def insert_haunted_script(response):
-    html = response.content
     try:
+        html = response.content
         content = lxml.html.fromstring(html)
         # styles = content.xpath('//style')
         # result = toronado.from_string(html)
@@ -18,11 +18,11 @@ def insert_haunted_script(response):
         head.insert(-1, lxml.html.fromstring(
             '<script type="text/javascript" src="%shaunted/main.js">' % settings.STATIC_URL
         ))
-        html = lxml.html.tostring(content).decode('utf-8')
+        response.content = lxml.html.tostring(content).decode('utf-8')
+        return response
     except Exception as e:
         logger.debug(e)
-    finally:
-        return html
+    return response
 
 def haunted_middleware(get_response):
     # One-time configuration and initialization.
@@ -35,7 +35,6 @@ def haunted_middleware(get_response):
         # Code to be executed for each request/response after
         # the view is called.
 
-        response.content = insert_haunted_script(response)
-        return response
+        return insert_haunted_script(response)
 
     return middleware
