@@ -28,6 +28,7 @@ setup(
     install_requires=[
         'setuptools',
         'wagtail',
+        'lxml'
     ],
     # generate scripts
     # entry_points={
