@@ -1,6 +1,8 @@
 import { getScreenshot } from 'screenshot'
 import * as THREE from 'three'
 import OBJLoader from 'three-obj-loader'
+
+
 OBJLoader(THREE)
 
 
@@ -23,6 +25,8 @@ var windowHalfY = window.innerHeight / 2;
 
 function init(base64Image) {
 
+  var loader = new THREE.TextureLoader();
+
   container = document.createElement( 'div' );
   container.style.cssText = 'position: absolute; top: 0';
   container.setAttribute("id", "hauntedoverlay");
@@ -35,7 +39,8 @@ function init(base64Image) {
 
   scene = new THREE.Scene();
 
-  bgTexture = THREE.ImageUtils.loadTexture(base64Image);
+  bgTexture = loader.load(base64Image);
+  bgTexture.minFilter = THREE.LinearFilter;
   scene.background = bgTexture;
   // bgTexture.wrapS = THREE.MirroredRepeatWrapping;
   // bgTexture.wrapT = THREE.MirroredRepeatWrapping;
@@ -66,7 +71,14 @@ function init(base64Image) {
     object.traverse(function (child) {
 
       if (child instanceof THREE.Mesh) {
-	child.material.map = bgTexture;
+        //child.material.map = bgTexture;
+        var material = new THREE.MeshBasicMaterial( { map: bgTexture } );
+        material.transparent = true;
+        material.blending = THREE.MultiplyBlending;
+        //texture = new THREE.MeshBasicMaterial( { map: map } );
+        child.material = material;
+        // object.material.transparent = true;
+        //child.material.blending = "NormalBlending";
       }
 
     });
@@ -80,12 +92,13 @@ function init(base64Image) {
 
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(window.innerWidth, document.body.scrollHeight);
   container.appendChild(renderer.domElement);
 
   document.addEventListener('mousemove', onDocumentMouseMove, false);
   window.addEventListener('resize', onWindowResize, false);
 }
+
 
 function onWindowResize() {
 
@@ -97,9 +110,10 @@ function onWindowResize() {
   camera.aspect = aspect;
   camera.updateProjectionMatrix();
 
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(window.innerWidth, document.body.scrollHeight);
 
 }
+
 
 function onDocumentMouseMove(event) {
 
@@ -118,11 +132,10 @@ function animate() {
 
 function render() {
 
-  camera.position.x += (mouseX - camera.position.x) * .05;
-  camera.position.y += (- mouseY - camera.position.y) * .05;
+  camera.position.x += (mouseX - camera.position.x) * 0.05;
+  camera.position.y += (- mouseY - camera.position.y) * 0.05;
 
   camera.lookAt(scene.position);
 
   renderer.render(scene, camera);
-
 }
