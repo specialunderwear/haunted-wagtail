@@ -1,6 +1,7 @@
-import { getScreenshot } from 'screenshot'
-import * as THREE from 'three'
-import OBJLoader from 'three-obj-loader'
+import { getScreenshot } from 'screenshot';
+import * as THREE from 'three';
+import OBJLoader from 'three-obj-loader';
+import { muhaha } from 'sound';
 
 
 OBJLoader(THREE)
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', evt => {
   getScreenshot(document.body).then(img => {
     init(img);
     animate();
+    muhaha(document);
   });
 });
 
@@ -95,7 +97,7 @@ function init(base64Image) {
 
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, document.body.scrollHeight);
+  renderer.setSize(window.innerWidth - 20, document.body.scrollHeight);
   container.appendChild(renderer.domElement);
 
   document.addEventListener('mousemove', onDocumentMouseMove, false);
