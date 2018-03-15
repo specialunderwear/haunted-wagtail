@@ -1,7 +1,8 @@
 # Haunted Wagtail... muhahahahaaaaaa
 
-Haunted wagtail provides a spot of evil in your website. Did you hear
-that? Wat is that face that stares at you?
+Haunted wagtail provides a spot of evil for your website. Did you hear
+that eerie noise? What is that face that stares at you from between
+the lines?
 
 
 ## Install
@@ -15,11 +16,11 @@ or
     python setup.py install
 
 or your own favorite command to get things installed.
-Add the following settings:
+Add the following settings for your Django project:
 
-  INSTALLED_APPS += ['haunted']
+    INSTALLED_APPS += ['haunted']
 
-  MIDDLEWARE += ['haunted.middleware.haunted_middleware']
+    MIDDLEWARE += ['haunted.middleware.haunted_middleware']
 
 and in your url conf:
 
@@ -37,4 +38,4 @@ inside this directory, and if you like:
 
     npm run-script watch
 
-during development. Rev up your website, and start running...
+during development. Rev up your website, and be afraid. Be very afraid...
