@@ -25,118 +25,104 @@ function init(base64Image) {
 
   container = document.createElement( 'div' );
   container.style.cssText = 'position: absolute; top: 0';
-    document.body.appendChild( container );
+  container.setAttribute("id", "hauntedoverlay");
+  document.body.appendChild( container );
 
-    camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-    camera.position.z = 250;
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+  camera.position.z = 250;
 
-    // scene
+  // scene
 
-    scene = new THREE.Scene();
+  scene = new THREE.Scene();
 
-    bgTexture = THREE.ImageUtils.loadTexture(base64Image);
-    scene.background = bgTexture;
-    bgTexture.wrapS = THREE.MirroredRepeatWrapping;
-    bgTexture.wrapT = THREE.MirroredRepeatWrapping;
+  bgTexture = THREE.ImageUtils.loadTexture(base64Image);
+  scene.background = bgTexture;
+  // bgTexture.wrapS = THREE.MirroredRepeatWrapping;
+  // bgTexture.wrapT = THREE.MirroredRepeatWrapping;
 
-    var ambientLight = new THREE.AmbientLight( 0xcccccc, 0.4 );
-    scene.add( ambientLight );
+  var ambientLight = new THREE.AmbientLight(0xcccccc, 0.4);
+  scene.add(ambientLight);
 
-    var pointLight = new THREE.PointLight( 0xffffff, 0.8 );
-    camera.add( pointLight );
-    scene.add( camera );
+  var pointLight = new THREE.PointLight(0xffffff, 0.8);
+  camera.add(pointLight);
+  scene.add(camera);
 
-    // texture
+  // texture
 
-    var manager = new THREE.LoadingManager();
-    manager.onProgress = function ( item, loaded, total ) {
+  var onProgress = function (xhr) {
+    if (xhr.lengthComputable) {
+      var percentComplete = xhr.loaded / xhr.total * 100;
+      console.log(Math.round(percentComplete, 2) + '% downloaded');
+    }
+  };
 
-	console.log( item, loaded, total );
+  var onError = function (xhr) {
+  };
 
-    };
+  var objLoader = new THREE.OBJLoader();
 
-    var textureLoader = new THREE.TextureLoader( manager );
-    var texture = textureLoader.load( '/static/haunted/wagtail_screenshot.png' );
+  objLoader.load('/static/haunted/male02.obj', function (object) {
 
-    // model
+    object.traverse(function (child) {
 
-    var onProgress = function ( xhr ) {
-	if ( xhr.lengthComputable ) {
-	    var percentComplete = xhr.loaded / xhr.total * 100;
-	    console.log( Math.round(percentComplete, 2) + '% downloaded' );
-	}
-    };
+      if (child instanceof THREE.Mesh) {
+	child.material.map = bgTexture;
+      }
 
-    var onError = function ( xhr ) {
-    };
+    });
 
-    var objLoader = new THREE.OBJLoader( manager );
+    object.position.y = - 95;
+    scene.add(object);
 
-    objLoader.load( '/static/haunted/male02.obj', function ( object ) {
+  }, onProgress, onError);
 
-	object.traverse( function ( child ) {
+  //
 
-	    if ( child instanceof THREE.Mesh ) {
+  renderer = new THREE.WebGLRenderer();
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  container.appendChild(renderer.domElement);
 
-		child.material.map = texture;
-
-	    }
-
-	} );
-
-	object.position.y = - 95;
-	scene.add( object );
-
-    }, onProgress, onError );
-
-    //
-
-    renderer = new THREE.WebGLRenderer();
-    renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    container.appendChild( renderer.domElement );
-
-    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-    window.addEventListener( 'resize', onWindowResize, false );
-
+  document.addEventListener('mousemove', onDocumentMouseMove, false);
+  window.addEventListener('resize', onWindowResize, false);
 }
 
 function onWindowResize() {
 
-    windowHalfX = window.innerWidth / 2;
-    windowHalfY = window.innerHeight / 2;
+  windowHalfX = window.innerWidth / 2;
+  windowHalfY = window.innerHeight / 2;
 
-    var aspect = window.innerWidth / window.innerHeight;
+  var aspect = window.innerWidth / window.innerHeight;
 
-    camera.aspect = aspect;
-    camera.updateProjectionMatrix();
+  camera.aspect = aspect;
+  camera.updateProjectionMatrix();
 
-    renderer.setSize( window.innerWidth, window.innerHeight );
+  renderer.setSize(window.innerWidth, window.innerHeight);
 
 }
 
-function onDocumentMouseMove( event ) {
+function onDocumentMouseMove(event) {
 
-    mouseX = ( event.clientX - windowHalfX ) / 2;
-    mouseY = ( event.clientY - windowHalfY ) / 2;
+  mouseX = (event.clientX - windowHalfX) / 2;
+  mouseY = (event.clientY - windowHalfY) / 2;
 
 }
 
 
 function animate() {
 
-    requestAnimationFrame( animate );
-    render();
+  requestAnimationFrame(animate);
+  render();
 
 }
 
 function render() {
 
-    camera.position.x += ( mouseX - camera.position.x ) * .05;
-    camera.position.y += ( - mouseY - camera.position.y ) * .05;
+  camera.position.x += (mouseX - camera.position.x) * .05;
+  camera.position.y += (- mouseY - camera.position.y) * .05;
 
-    camera.lookAt( scene.position );
+  camera.lookAt(scene.position);
 
-    renderer.render( scene, camera );
+  renderer.render(scene, camera);
 
 }
