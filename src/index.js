@@ -8,10 +8,11 @@ OBJLoader(THREE)
 
 document.addEventListener('DOMContentLoaded', evt => {
   getScreenshot(document.body).then(img => {
-    init(img)
-    animate()
-  })
-})
+    init(img);
+    animate();
+  });
+});
+
 
 var container;
 
@@ -73,8 +74,12 @@ function init(base64Image) {
       if (child instanceof THREE.Mesh) {
         //child.material.map = bgTexture;
         var material = new THREE.MeshBasicMaterial( { map: bgTexture } );
-        material.transparent = true;
-        material.blending = THREE.MultiplyBlending;
+        
+        var scale = window.innerHeight / document.body.scrollHeight;
+        
+        child.scale.set(1, scale, scale);
+        
+        //material.blending = THREE.MultiplyBlending;
         //texture = new THREE.MeshBasicMaterial( { map: map } );
         child.material = material;
         // object.material.transparent = true;
@@ -83,7 +88,7 @@ function init(base64Image) {
 
     });
 
-    object.position.y = - 95;
+    object.position.y = 60;
     scene.add(object);
 
   }, onProgress, onError);
@@ -129,6 +134,7 @@ function animate() {
   render();
 
 }
+
 
 function render() {
 
