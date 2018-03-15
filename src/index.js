@@ -1,11 +1,7 @@
 import { getScreenshot } from 'screenshot';
-import * as THREE from 'three';
-import OBJLoader from 'three-obj-loader';
 import { muhaha } from 'sound';
-
-
-OBJLoader(THREE)
-
+import THREELib from "three-js";
+var THREE = THREELib(["OBJLoader", "FresnelShader"]);
 
 document.addEventListener('DOMContentLoaded', evt => {
   getScreenshot(document.body).then(img => {
@@ -15,15 +11,20 @@ document.addEventListener('DOMContentLoaded', evt => {
   });
 });
 
-
 var container;
 
 var camera, scene, renderer, bgTexture, bgWidth, bgHeight;
+var refractSphereCamera;
 
 var mouseX = 0, mouseY = 0;
 
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
+
+var devilObj;
+
+var zMax = [-100, -50];
+var zStep = 1;
 
 
 function init(base64Image) {
@@ -45,8 +46,6 @@ function init(base64Image) {
   bgTexture = loader.load(base64Image);
   bgTexture.minFilter = THREE.LinearFilter;
   scene.background = bgTexture;
-  // bgTexture.wrapS = THREE.MirroredRepeatWrapping;
-  // bgTexture.wrapT = THREE.MirroredRepeatWrapping;
 
   var ambientLight = new THREE.AmbientLight(0xcccccc, 0.4);
   scene.add(ambientLight);
@@ -54,6 +53,30 @@ function init(base64Image) {
   var pointLight = new THREE.PointLight(0xffffff, 0.8);
   camera.add(pointLight);
   scene.add(camera);
+  camera.lookAt(scene.position);
+
+  refractSphereCamera = new THREE.CubeCamera(0.1, 1000, 1000);
+
+	scene.add( refractSphereCamera );
+
+  var fShader = THREE.FresnelShader;
+
+  var fresnelUniforms =
+  {
+    "mRefractionRatio": { type: "f", value: 1.02 },
+    "mFresnelBias":   { type: "f", value: 0.1 },
+    "mFresnelPower":   { type: "f", value: 1.0 },
+    "mFresnelScale":   { type: "f", value: 1.0 },
+    "tCube":       { type: "t", value: refractSphereCamera.renderTarget }
+  };
+
+  // create custom material for the shader
+  var customMaterial = new THREE.ShaderMaterial(
+  {
+    uniforms:     fresnelUniforms,
+    vertexShader:   fShader.vertexShader,
+    fragmentShader: fShader.fragmentShader
+  });
 
   // texture
 
@@ -74,24 +97,23 @@ function init(base64Image) {
     object.traverse(function (child) {
 
       if (child instanceof THREE.Mesh) {
-        //child.material.map = bgTexture;
-        var material = new THREE.MeshBasicMaterial( { map: bgTexture } );
-        
+        //var material = new THREE.MeshBasicMaterial( { map: bgTexture } );
+
         var scale = window.innerHeight / document.body.scrollHeight;
-        
+
         child.scale.set(1, scale, 1);
-        
-        //material.blending = THREE.MultiplyBlending;
-        //texture = new THREE.MeshBasicMaterial( { map: map } );
-        child.material = material;
-        // object.material.transparent = true;
-        //child.material.blending = "NormalBlending";
+
+        //child.material = material;
+        child.material = customMaterial;
       }
 
     });
 
+    devilObj = object;
     object.position.y = 60;
+    object.position.z = -100;
     scene.add(object);
+
 
   }, onProgress, onError);
 
@@ -100,10 +122,27 @@ function init(base64Image) {
   renderer.setSize(window.innerWidth - 20, document.body.scrollHeight);
   container.appendChild(renderer.domElement);
 
-  document.addEventListener('mousemove', onDocumentMouseMove, false);
+  // document.addEventListener('mousemove', onDocumentMouseMove, false);
   window.addEventListener('resize', onWindowResize, false);
+
+  timeout();
 }
 
+function timeout() {
+
+  var timer = setInterval(function() {
+    if (devilObj != undefined) {
+      if (devilObj.position.z < zMax[0]) {
+        zStep = +1;
+      }
+      if (devilObj.position.z > zMax[1]) {
+        zStep = -1;
+      }
+      devilObj.position.z += zStep;
+    }
+  }, 100);
+
+}
 
 function onWindowResize() {
 
@@ -119,29 +158,19 @@ function onWindowResize() {
 
 }
 
-
-function onDocumentMouseMove(event) {
-
-  mouseX = (event.clientX - windowHalfX) / 2;
-  mouseY = (event.clientY - windowHalfY) / 2;
-
-}
-
-
 function animate() {
-
   requestAnimationFrame(animate);
   render();
-
 }
 
 
 function render() {
-
-  camera.position.x += (mouseX - camera.position.x) * 0.05;
-  camera.position.y += (- mouseY - camera.position.y) * 0.05;
-
-  camera.lookAt(scene.position);
+  if (devilObj != undefined) {
+    devilObj.visible = false;
+    refractSphereCamera.updateCubeMap( renderer, scene );
+    devilObj.visible = true;
+  }
 
   renderer.render(scene, camera);
 }
+

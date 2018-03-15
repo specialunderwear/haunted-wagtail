@@ -1,5 +1,7 @@
 import html2canvas from 'html2canvas'
-import * as THREE from 'three'
+//import * as THREE from 'three'
+import THREELib from "three-js";
+var THREE = THREELib();
 
 export function getScreenshot(node) {
   return html2canvas(node).then(canvas => {
