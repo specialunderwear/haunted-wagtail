@@ -33,7 +33,7 @@ function init(base64Image) {
   container.setAttribute("id", "hauntedoverlay");
   document.body.appendChild( container );
 
-  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 300);
   camera.position.z = 250;
 
   // scene
@@ -92,8 +92,6 @@ function init(base64Image) {
     scene.add(object);
 
   }, onProgress, onError);
-
-  //
 
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
