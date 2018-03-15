@@ -77,7 +77,7 @@ function init(base64Image) {
         
         var scale = window.innerHeight / document.body.scrollHeight;
         
-        child.scale.set(1, scale, scale);
+        child.scale.set(1, scale, 1);
         
         //material.blending = THREE.MultiplyBlending;
         //texture = new THREE.MeshBasicMaterial( { map: map } );
