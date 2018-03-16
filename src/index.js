@@ -4,10 +4,17 @@ import THREELib from "three-js";
 var THREE = THREELib(["OBJLoader", "FresnelShader"]);
 
 document.addEventListener('DOMContentLoaded', evt => {
-  getScreenshot(document.body).then(img => {
-    init(img);
-    animate();
-    muhaha(document);
+  var searchInput = document.getElementsByTagName("input").namedItem("q");
+
+  searchInput.addEventListener("change", evt => {
+    
+    if (evt.target.value == "666") {
+      getScreenshot(document.body).then(img => {
+        init(img);
+        animate();
+        muhaha(document);
+      });
+    }
   });
 });
 
@@ -32,7 +39,7 @@ function init(base64Image) {
   var loader = new THREE.TextureLoader();
 
   container = document.createElement( 'div' );
-  container.style.cssText = 'position: absolute; top: 0';
+  container.style.cssText = 'position: absolute; top: 0; z-index: -1';
   container.setAttribute("id", "hauntedoverlay");
   document.body.appendChild( container );
 
@@ -92,7 +99,7 @@ function init(base64Image) {
 
   var objLoader = new THREE.OBJLoader();
 
-  objLoader.load('/static/haunted/male02.obj', function (object) {
+  objLoader.load('/static/haunted/skull.obj', function (object) {
 
     object.traverse(function (child) {
 
@@ -101,7 +108,8 @@ function init(base64Image) {
 
         var scale = window.innerHeight / document.body.scrollHeight;
 
-        child.scale.set(1, scale, 1);
+        //child.scale.set(1, scale, 1);
+        child.scale.set(10, 10, 10);
 
         //child.material = material;
         child.material = customMaterial;
@@ -110,7 +118,7 @@ function init(base64Image) {
     });
 
     devilObj = object;
-    object.position.y = 60;
+    object.position.y = 70;
     object.position.z = -100;
     scene.add(object);
 
@@ -119,10 +127,11 @@ function init(base64Image) {
 
   renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth - 20, document.body.scrollHeight);
+  renderer.setSize(document.body.scrollWidth, document.body.scrollHeight);
   container.appendChild(renderer.domElement);
 
-  // document.addEventListener('mousemove', onDocumentMouseMove, false);
+  container.style.zIndex = 666666;  
+
   window.addEventListener('resize', onWindowResize, false);
 
   timeout();
