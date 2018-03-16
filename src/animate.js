@@ -26,7 +26,7 @@ export class Animator {
     var loader = new THREE.TextureLoader();
 
     this.container = document.createElement( 'div' );
-    this.container.style.cssText = 'position: absolute; top: 0';
+    this.container.style.cssText = 'position: absolute; top: 0; z-index: 666666666666';
     this.container.setAttribute("id", "hauntedoverlay");
     document.body.appendChild( this.container );
 
@@ -92,10 +92,9 @@ export class Animator {
 
         if (child instanceof THREE.Mesh) {
           //var material = new THREE.MeshBasicMaterial( { map: this.bgTexture } );
-
           //var scale = window.innerHeight / document.body.scrollHeight;
 
-          child.scale.set(10, 10, 10);
+          child.scale.set(30, 5, 10);
 
           //child.material = material;
           child.material = customMaterial;
@@ -111,9 +110,9 @@ export class Animator {
 
     }, onProgress, onError);
 
-    this.renderer = new THREE.WebGLRenderer();
+    this.renderer = new THREE.WebGLRenderer({ alpha: true });
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setSize(window.innerWidth - 20, document.body.scrollHeight);
+    this.renderer.setSize(window.innerWidth - 25, document.body.scrollHeight);
     this.container.appendChild(this.renderer.domElement);
 
     // document.addEventListener('mousemove', onDocumentMouseMove, false);
