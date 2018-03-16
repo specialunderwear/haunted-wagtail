@@ -1,5 +1,6 @@
 import { getScreenshot } from 'screenshot';
 import { muhaha } from 'sound';
+import { Animator } from 'animate';
 import THREELib from "three-js";
 var THREE = THREELib(["OBJLoader", "FresnelShader"]);
 
@@ -7,9 +8,12 @@ document.addEventListener('DOMContentLoaded', evt => {
   var searchInput = document.getElementsByTagName("input").namedItem("q");
 
   searchInput.addEventListener("change", evt => {
-    
+
     if (evt.target.value == "666") {
       getScreenshot(document.body).then(img => {
+        // var animator = new Animator(texture)
+        // animator.init(texture);
+        // animator.animate();
         init(img);
         animate();
         muhaha(document);
@@ -130,7 +134,7 @@ function init(base64Image) {
   renderer.setSize(document.body.scrollWidth, document.body.scrollHeight);
   container.appendChild(renderer.domElement);
 
-  container.style.zIndex = 666666;  
+  container.style.zIndex = 666666;
 
   window.addEventListener('resize', onWindowResize, false);
 
