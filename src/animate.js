@@ -1,5 +1,9 @@
 import THREELib from "three-js";
+import { SETTINGS } from 'settings';
+
+
 var THREE = THREELib(["OBJLoader", "FresnelShader"]);
+
 
 export class Animator {
 
@@ -13,7 +17,6 @@ export class Animator {
     this.windowHalfX = window.innerWidth / 2;
     this.windowHalfY = window.innerHeight / 2;
     this.devilObj = null;
-    this.zMax = [-100, -50];
     this.zStep = 1;
 
     this.texture = texture;
@@ -85,7 +88,7 @@ export class Animator {
 
     var objLoader = new THREE.OBJLoader();
 
-    objLoader.load('/static/haunted/male02.obj', (object) => {
+    objLoader.load(SETTINGS.spook, (object) => {
 
       object.traverse(function (child) {
 
@@ -103,8 +106,8 @@ export class Animator {
       });
 
       this.devilObj = object;
-      this.devilObj.position.y = 60;
-      this.devilObj.position.z = -100;
+      this.devilObj.position.y = SETTINGS.spookposition.y;
+      this.devilObj.position.z = SETTINGS.spookposition.z;
       this.scene.add(this.devilObj);
 
 
@@ -125,10 +128,10 @@ export class Animator {
 
     var timer = setInterval(() => {
       if (this.devilObj != undefined) {
-        if (this.devilObj.position.z < this.zMax[0]) {
+        if (this.devilObj.position.z < SETTINGS.spook_z_range[0]) {
           this.zStep = +1;
         }
-        if (this.devilObj.position.z > this.zMax[1]) {
+        if (this.devilObj.position.z > SETTINGS.spook_z_range[1]) {
           this.zStep = -1;
         }
         this.devilObj.position.z += this.zStep;

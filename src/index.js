@@ -2,6 +2,9 @@ import { getScreenshot } from 'screenshot';
 import { muhaha } from 'sound';
 import { Animator } from 'animate';
 import THREELib from "three-js";
+import { SETTINGS } from 'settings';
+
+
 var THREE = THREELib(["OBJLoader", "FresnelShader"]);
 
 document.addEventListener('DOMContentLoaded', evt => {
@@ -34,7 +37,6 @@ var windowHalfY = window.innerHeight / 2;
 
 var devilObj;
 
-var zMax = [-100, -50];
 var zStep = 1;
 
 
@@ -48,7 +50,7 @@ function init(base64Image) {
   document.body.appendChild( container );
 
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 300);
-  camera.position.z = 250;
+  camera.position.z = SETTINGS.cameraposition.z;
 
   // scene
 
@@ -103,7 +105,7 @@ function init(base64Image) {
 
   var objLoader = new THREE.OBJLoader();
 
-  objLoader.load('/static/haunted/skull.obj', function (object) {
+  objLoader.load(SETTINGS.spook, function (object) {
 
     object.traverse(function (child) {
 
@@ -122,8 +124,8 @@ function init(base64Image) {
     });
 
     devilObj = object;
-    object.position.y = 70;
-    object.position.z = -100;
+    object.position.y = SETTINGS.spookposition.y;
+    object.position.z = SETTINGS.spookposition.z;
     scene.add(object);
 
 
@@ -141,35 +143,34 @@ function init(base64Image) {
   timeout();
 }
 
+
 function timeout() {
 
   var timer = setInterval(function() {
-    if (devilObj != undefined) {
-      if (devilObj.position.z < zMax[0]) {
+    if (devilObj !== undefined) {
+      if (devilObj.position.z < SETTINGS.spook_z_range[0]) {
         zStep = +1;
       }
-      if (devilObj.position.z > zMax[1]) {
+      if (devilObj.position.z > SETTINGS.spook_z_range[1]) {
         zStep = -1;
       }
       devilObj.position.z += zStep;
     }
-  }, 100);
-
+  }, SETTINGS.ztimeout);
 }
+
 
 function onWindowResize() {
 
   windowHalfX = window.innerWidth / 2;
   windowHalfY = window.innerHeight / 2;
 
-  var aspect = window.innerWidth / window.innerHeight;
-
-  camera.aspect = aspect;
+  camera.aspect = (window.innerWidth / window.innerHeight);
   camera.updateProjectionMatrix();
 
   renderer.setSize(window.innerWidth, document.body.scrollHeight);
-
 }
+
 
 function animate() {
   requestAnimationFrame(animate);
@@ -178,7 +179,7 @@ function animate() {
 
 
 function render() {
-  if (devilObj != undefined) {
+  if (devilObj !== undefined) {
     devilObj.visible = false;
     refractSphereCamera.updateCubeMap( renderer, scene );
     devilObj.visible = true;
@@ -186,4 +187,3 @@ function render() {
 
   renderer.render(scene, camera);
 }
-
