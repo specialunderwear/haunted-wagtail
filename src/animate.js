@@ -1,7 +1,5 @@
 import THREELib from "three-js";
 import { SETTINGS } from 'settings';
-
-
 var THREE = THREELib(["OBJLoader", "FresnelShader"]);
 
 
@@ -95,9 +93,9 @@ export class Animator {
         if (child instanceof THREE.Mesh) {
           //var material = new THREE.MeshBasicMaterial( { map: this.bgTexture } );
 
-          var scale = window.innerHeight / document.body.scrollHeight;
+          //var scale = window.innerHeight / document.body.scrollHeight;
 
-          child.scale.set(1, scale, 1);
+          child.scale.set(10, 10, 10);
 
           //child.material = material;
           child.material = customMaterial;
